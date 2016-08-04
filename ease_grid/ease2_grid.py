@@ -76,8 +76,8 @@ class EASE2_grid(object):
             self.shape = (len(self.latdim), len(self.londim))
 
     def setup_global(self):
-        self.ease = pyproj.Proj(("+proj=cea +lat 0=0 +lon 0=0 +lat 1=30 "
-                                 "+x 0=0 +y 0=0 +ellps=WGS84 +datum=WGS84 +units=m"))
+        self.ease = pyproj.Proj(("+proj=cea +lat_0=0 +lon_0=0 +lat_ts=30 "
+                                 "+x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m"))
         # circumference of the WGS84 ellipsoid at latitude 30 degrees
         self.circum_ref_lat = self.geod.ParallelRadi(30) * 2 * math.pi
 
