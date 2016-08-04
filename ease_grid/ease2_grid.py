@@ -43,10 +43,27 @@ class EASE2_grid(object):
        'G' for Global
     map_scale: float, optional
        if the map_scale is given and should not be calculated
+
+    Attributes
+    ----------
+    res: float
+       resolution that the grid tiling should have
+    map_scale: float
+       resolution that is possible based on integer tiling of the projection
+    x_pixel: float
+       pixels extent in x direction in meters
+    y_pixel: float
+       pixels extent in y direction in meters
+    latdim: numpy.ndarray
+       latitudes used in the tiling
+    londim: numpy.ndarray
+       longitudes used in the tiling
+    shape: tuple
+       size of the tiling in (latdim, londim)
     """
 
     def __init__(self, res, proj='G', map_scale=None):
-        self.wanted_res = res
+        self.res = res
         if proj != 'G':
             raise NotImplementedError(
                 "Only Global projection supported for now.")
@@ -64,7 +81,7 @@ class EASE2_grid(object):
         # circumference of the WGS84 ellipsoid at latitude 30 degrees
         self.circum_ref_lat = self.geod.ParallelRadi(30) * 2 * math.pi
 
-        self.x_int = int(self.circum_ref_lat / self.wanted_res)
+        self.x_int = int(self.circum_ref_lat / self.res)
         # x_int has to be an even number
         if self.x_int % 2 != 0:
             self.x_int = self.x_int - 1
