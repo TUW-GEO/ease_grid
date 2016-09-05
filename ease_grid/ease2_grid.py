@@ -127,13 +127,14 @@ class EASE2_grid(object):
         # the northern and southern pixel center.
 
         try:
-            self.ease(0, y_arr[0] + self.y_pixel / 2,
-                      inverse=True,
-                      errcheck=True)[1]
+            lat = self.ease(0, y_arr[0] + self.y_pixel / 2,
+                            inverse=True,
+                            errcheck=True)[1]
+            if lat > 86.6225:
+                y_arr = y_arr[1:-1]
         except RuntimeError:
             # Exclude northmost and southmost latitude
             y_arr = y_arr[1:-1]
-
         londim, _ = self.ease(x_arr, np.zeros(x_arr.shape), inverse=True)
         _, latdim = self.ease(np.zeros(y_arr.shape), y_arr, inverse=True)
         return londim, latdim
