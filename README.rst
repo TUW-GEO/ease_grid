@@ -2,6 +2,18 @@
 ease_grid
 =========
 
+.. image:: https://travis-ci.org/TUW-GEO/ease_grid.svg?branch=master
+    :target: https://travis-ci.org/TUW-GEO/ease_grid
+
+.. image:: https://coveralls.io/repos/github/TUW-GEO/ease_grid/badge.svg?branch=master
+   :target: https://coveralls.io/github/TUW-GEO/ease_grid?branch=master
+
+.. image:: https://badge.fury.io/py/ease_grid.svg
+    :target: http://badge.fury.io/py/ease_grid
+
+.. image:: https://zenodo.org/badge/12761/TUW-GEO/ease_grid.svg
+   :target: https://zenodo.org/badge/latestdoi/12761/TUW-GEO/ease_grid
+
 The Equal-Area Scalable Earth (EASE) Grid is a system of projections that is
 used by NASA and others for distribution of remote sensing data.
 
