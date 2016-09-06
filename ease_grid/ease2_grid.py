@@ -25,8 +25,6 @@ Module for generation of EASE grid 2.0 latitudes and longitudes.
 '''
 
 import pyproj
-import math
-import pygeogrids
 import numpy as np
 
 
@@ -69,7 +67,6 @@ class EASE2_grid(object):
                 "Only Global projection supported for now.")
         self.proj = proj
         self.map_scale = map_scale
-        self.geod = pygeogrids.geodetic_datum.GeodeticDatum("WGS84")
         # global ease grid 2.0
         if self.proj == 'G':
             self.londim, self.latdim = self.setup_global()
@@ -78,15 +75,6 @@ class EASE2_grid(object):
     def setup_global(self):
         self.ease = pyproj.Proj(("+proj=cea +lat_0=0 +lon_0=0 +lat_ts=30 "
                                  "+x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m"))
-        # circumference of the WGS84 ellipsoid at latitude 30 degrees
-        self.circum_ref_lat = self.geod.ParallelRadi(30) * 2 * math.pi
-
-        self.x_int = int(self.circum_ref_lat / self.res)
-        # x_int has to be an even number
-        if self.x_int % 2 != 0:
-            self.x_int = self.x_int - 1
-        if self.map_scale is None:
-            self.map_scale = self.circum_ref_lat / self.x_int
 
         # We want to tile the projection into a grid that has the same sampling as a
         # 36x36 km square pixel. So we calculate the size of our pixels in x direction
@@ -94,10 +82,19 @@ class EASE2_grid(object):
 
         self.x_min, self.y_max = self.ease(-180, 90)
         self.x_max, self.y_min = self.ease(180, -90)
-
         # calculate x extent in meters and size of pixel in x direction
         self.x_extent = self.x_max - self.x_min
+        self.x_int = int(self.x_extent / self.res)
+
+        # x_int has to be an even number
+        if self.x_int % 2 != 0:
+            self.x_int = self.x_int - 1
+        if self.map_scale is None:
+            self.map_scale = self.x_extent / self.x_int
+
         self.x_pixel = self.x_extent / self.x_int
+
+        # calculate x extent in meters and size of pixel in x direction
         # the y_pixel size can now be calculated so that the area covered by a pixel is
         # a close to the square pixel of the wanted resolution
         self.y_pixel = (self.map_scale ** 2) / self.x_pixel
