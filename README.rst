@@ -22,6 +22,23 @@ You can find some overview information at `the NSIDC website
 clear to me how the latitude, longitude values of certain EASE grid resolutions
 were calculated. So I wrote this package to find out.
 
+Citation
+========
+
+If you use the software in a publication then please cite it using the Zenodo DOI:
+
+.. image:: https://zenodo.org/badge/12761/TUW-GEO/ease_grid.svg
+   :target: https://zenodo.org/badge/latestdoi/12761/TUW-GEO/ease_grid
+
+Installation
+============
+
+This package should be installable through pip:
+
+.. code::
+
+    pip install ease_grid
+
 Supported EASE Grids
 ====================
 
@@ -51,6 +68,30 @@ To get the coordinates of a EASE2 grid:
     # these two attributes contain the longitude and latitude coordinate dimension
     egrid.londim
     egrid.latdim
+
+Contribute
+==========
+
+We are happy if you want to contribute. Please raise an issue explaining what
+is missing or if you find a bug. We will also gladly accept pull requests
+against our master branch for new features or bug fixes.
+
+Development setup
+-----------------
+
+For Development we recommend a ``conda`` environment
+
+Guidelines
+----------
+
+If you want to contribute please follow these steps:
+
+- Fork the ease_grid repository to your account
+- make a new feature branch from the ease_grid master branch
+- Add your feature
+- Please include tests for your contributions in one of the test directories.
+  We use py.test so a simple function called test_my_feature is enough
+- submit a pull request to our master branch
 
 Note
 ====
