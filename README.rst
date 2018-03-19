@@ -14,6 +14,9 @@ ease_grid
 .. image:: https://zenodo.org/badge/12761/TUW-GEO/ease_grid.svg
    :target: https://zenodo.org/badge/latestdoi/12761/TUW-GEO/ease_grid
 
+.. image:: https://readthedocs.org/projects/ease-grid/badge/?version=latest
+    :target: http://ease-grid.readthedocs.io/en/latest/?badge=latest
+
 The Equal-Area Scalable Earth (EASE) Grid is a system of projections that is
 used by NASA and others for distribution of remote sensing data.
 
