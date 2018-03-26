@@ -11,9 +11,6 @@ ease_grid
 .. image:: https://badge.fury.io/py/ease_grid.svg
     :target: http://badge.fury.io/py/ease_grid
 
-.. image:: https://zenodo.org/badge/12761/TUW-GEO/ease_grid.svg
-   :target: https://zenodo.org/badge/latestdoi/12761/TUW-GEO/ease_grid
-
 .. image:: https://readthedocs.org/projects/ease-grid/badge/?version=latest
     :target: http://ease-grid.readthedocs.io/en/latest/?badge=latest
 
@@ -28,10 +25,11 @@ were calculated. So I wrote this package to find out.
 Citation
 ========
 
-If you use the software in a publication then please cite it using the Zenodo DOI:
 
 .. image:: https://zenodo.org/badge/12761/TUW-GEO/ease_grid.svg
    :target: https://zenodo.org/badge/latestdoi/12761/TUW-GEO/ease_grid
+
+If you use the software in a publication then please cite it using the Zenodo DOI.
 
 Installation
 ============
