@@ -2,10 +2,11 @@
 Changelog
 =========
 
-Version 0.X
-===========
+Unreleased
+==========
 
 - Update readme
+- Switch to pyscaffold 3
 
 Version 0.1
 ===========
