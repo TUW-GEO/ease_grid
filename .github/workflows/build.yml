@@ -29,23 +29,22 @@ jobs:
           - os: "windows-latest"
             python-version: '3.12'  # latest supported
     steps:
+      
       - uses: actions/checkout@v4
         with:
           submodules: true
           fetch-depth: 0
-          lfs: true 
-
-      - name: Install Git LFS and pull files
+          lfs: false  # Disable automatic LFS, we'll handle it manually
+      
+      - name: Install Git LFS and force pull files
         run: |
           if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
             sudo apt-get update
             sudo apt-get install git-lfs
-          else
-            # Windows already has git-lfs available
-            git lfs version
           fi
           git lfs install
-          git lfs pull
+          git lfs fetch --all
+          git lfs checkout
         shell: bash
 
       - name: Verify Git LFS files
