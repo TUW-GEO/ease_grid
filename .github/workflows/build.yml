@@ -38,15 +38,13 @@ jobs:
 
       - name: Setup and Pull Git LFS files
         run: |
-          # GitHub Actions runners come with git-lfs pre-installed.
-          # This step ensures it's initialized for the repository and pulls the files.
           echo "Current Git LFS version:"
           git lfs version
           git lfs install --local # Initialize LFS for this local repository clone
           echo "Fetching LFS objects..."
-          git lfs fetch --all --verbose # Fetch all LFS objects, verbose for more logs
+          git lfs fetch --all # Removed --verbose
           echo "Pulling LFS files into working directory..."
-          git lfs pull --verbose # Replace pointers with actual files, verbose for more logs
+          git lfs pull # Removed --verbose
         shell: bash
 
       - name: Verify Git LFS files
@@ -65,8 +63,11 @@ jobs:
             # if [ -f "tests/test_data/large_file.dat" ]; then
             #   echo "--- Verifying specific LFS file: tests/test_data/large_file.dat ---"
             #   echo "Actual size on disk:"
-            #   stat -c%s "tests/test_data/large_file.dat" # For Linux
-            #   # For Windows: powershell -Command "(Get-Item 'tests/test_data/large_file.dat').Length"
+            #   if [ "${{ runner.os }}" == "Windows" ]; then
+            #     powershell -Command "(Get-Item 'tests/test_data/large_file.dat').Length"
+            #   else
+            #     stat -c%s "tests/test_data/large_file.dat" # For Linux
+            #   fi
             #   echo "First 150 bytes (to check if it's a pointer or binary):"
             #   head -c 150 "tests/test_data/large_file.dat"
             #   echo
