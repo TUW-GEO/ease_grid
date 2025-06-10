@@ -44,10 +44,8 @@ jobs:
         with:
           lfs: true
     
-      - name: Check file sizes
-        run: |
-          ls -lh tests/test_data/*.double
-        shell: bash
+      - name: Pull LFS files
+        uses: git-lfs/git-lfs-action@v1.0.1
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
