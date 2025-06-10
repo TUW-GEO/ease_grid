@@ -33,13 +33,27 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
-          lfs: false
+          lfs: true
           
-      - name: Git LFS Setup
-        uses: ./.github/actions/git-lfs-setup
+      # Install Git LFS on Ubuntu
+      - name: Install Git LFS on Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl gcc
+          curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+          sudo apt-get install -y git-lfs
+          git lfs install
+          git lfs pull
 
-      - name: Pull LFS files
-        run: git lfs pull
+      # Install Git LFS on Windows
+      - name: Install Git LFS on Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          choco install git-lfs
+          git lfs install
+          git lfs pull
+        shell: powershell
 
       # Verify LFS files are downloaded correctly
       - name: Verify Git LFS files
