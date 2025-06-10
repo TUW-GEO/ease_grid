@@ -37,29 +37,17 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
-          lfs: true
-      
-      - name: Setup and pull Git LFS files
+          
+      - name: Download Git LFS files
         run: |
           git lfs install
           git lfs pull
+        shell: bash
     
-      # Enhanced verification step
-      - name: Verify Git LFS files
+      # Simple verification
+      - name: Check file sizes
         run: |
-          echo "=== LFS files tracked ==="
-          git lfs ls-files
-          echo "=== Test data directory ==="
-          ls -la tests/test_data/ || echo "test_data directory not found"
-          echo "=== File sizes ==="
-          if [ -f "tests/test_data/EASE2_M36km.lats.964x406x1.double" ]; then
-            ls -lh tests/test_data/EASE2_M36km.lats.964x406x1.double
-            wc -c tests/test_data/EASE2_M36km.lats.964x406x1.double
-          fi
-          if [ -f "tests/test_data/EASE2_M36km.lons.964x406x1.double" ]; then
-            ls -lh tests/test_data/EASE2_M36km.lons.964x406x1.double
-            wc -c tests/test_data/EASE2_M36km.lons.964x406x1.double
-          fi
+          ls -lh tests/test_data/*.double
         shell: bash
 
       - name: Set up Python ${{ matrix.python-version }}
