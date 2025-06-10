@@ -54,7 +54,7 @@ jobs:
           # Force download all LFS files
           echo "Starting LFS download..."
           git lfs fetch --all
-          git lfs checkout --force
+          git lfs checkout
       
           # Verify download worked (check file sizes)
           echo "Verifying LFS files are downloaded:"
