@@ -29,22 +29,23 @@ jobs:
           - os: "windows-latest"
             python-version: '3.12'  # latest supported
     steps:
-      - name: Checkout repository (LFS handling disabled initially)
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           submodules: true
-          fetch-depth: 0 # Important for LFS to fetch all history
-          lfs: false     # Disable built-in LFS handling by the action
+          fetch-depth: 0
+          lfs: true 
 
-      - name: Setup and Pull Git LFS files
+      - name: Install Git LFS and pull files
         run: |
-          echo "Current Git LFS version:"
-          git lfs version
-          git lfs install --local # Initialize LFS for this local repository clone
-          echo "Fetching LFS objects..."
-          git lfs fetch --all # Removed --verbose
-          echo "Pulling LFS files into working directory..."
-          git lfs pull # Removed --verbose
+          if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+            sudo apt-get update
+            sudo apt-get install git-lfs
+          else
+            # Windows already has git-lfs available
+            git lfs version
+          fi
+          git lfs install
+          git lfs pull
         shell: bash
 
       - name: Verify Git LFS files
