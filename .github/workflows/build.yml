@@ -38,16 +38,27 @@ jobs:
           submodules: true
           fetch-depth: 0
           
-      - name: Download Git LFS files
+      # Install and setup Git LFS (similar to Travis approach)
+      - name: Install and setup Git LFS
         run: |
+          # Git LFS should already be installed on GitHub runners, but let's ensure it's working
+          git lfs install --system
           git lfs install
+          echo "=== LFS version ==="
+          git lfs version
+          echo "=== LFS env ==="
+          git lfs env
+          echo "=== Pulling LFS files ==="
           git lfs pull
         shell: bash
     
-      # Simple verification
-      - name: Check file sizes
+      # Verify the download worked
+      - name: Verify LFS files
         run: |
+          echo "=== File sizes ==="
           ls -lh tests/test_data/*.double
+          echo "=== LFS status ==="
+          git lfs status
         shell: bash
 
       - name: Set up Python ${{ matrix.python-version }}
