@@ -57,6 +57,7 @@ jobs:
 
       - name: Install base package and run tests
         run: |
+          pip install setuptools
           pip install -e .[testing]
           pytest    
           
