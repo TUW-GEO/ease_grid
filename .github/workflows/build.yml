@@ -29,34 +29,51 @@ jobs:
           - os: "windows-latest"
             python-version: '3.12'  # latest supported
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository (LFS handling disabled initially)
+        uses: actions/checkout@v4
         with:
           submodules: true
-          fetch-depth: 0
-          lfs: true
-          
-      - name: Initialize Git LFS and Pull files
+          fetch-depth: 0 # Important for LFS to fetch all history
+          lfs: false     # Disable built-in LFS handling by the action
+
+      - name: Setup and Pull Git LFS files
         run: |
-          git lfs install --local
-          git lfs pull
-          echo "Git LFS version:"
+          # GitHub Actions runners come with git-lfs pre-installed.
+          # This step ensures it's initialized for the repository and pulls the files.
+          echo "Current Git LFS version:"
           git lfs version
+          git lfs install --local # Initialize LFS for this local repository clone
+          echo "Fetching LFS objects..."
+          git lfs fetch --all --verbose # Fetch all LFS objects, verbose for more logs
+          echo "Pulling LFS files into working directory..."
+          git lfs pull --verbose # Replace pointers with actual files, verbose for more logs
         shell: bash
 
-      # Verify LFS files are downloaded correctly
       - name: Verify Git LFS files
         run: |
-          echo "=== Git LFS files list ==="
+          echo "--- Git LFS env (shows LFS configuration) ---"
+          git lfs env
+          echo "--- Git LFS ls-files (shows tracked files, '*' means pointer, '-' means downloaded file) ---"
           git lfs ls-files
-          echo "=== LFS files with sizes ==="
-          git lfs ls-files | head -5 | while read line; do
-            file=$(echo $line | cut -d' ' -f3)
-            if [ -f "$file" ]; then
-              ls -lh "$file"
-            fi
-          done
-          echo "=== Test data directory ==="
-          ls -la tests/test_data/ || echo "test_data directory not found"
+          echo "--- Git LFS ls-files -l (shows size of checked-out files) ---"
+          git lfs ls-files -l
+          echo "--- Listing contents of tests/test_data/ (if it exists) ---"
+          if [ -d "tests/test_data/" ]; then
+            ls -laR tests/test_data/
+            # If you have a specific LFS file, check its size and content directly:
+            # For example, if 'tests/test_data/large_file.dat' is an LFS file:
+            # if [ -f "tests/test_data/large_file.dat" ]; then
+            #   echo "--- Verifying specific LFS file: tests/test_data/large_file.dat ---"
+            #   echo "Actual size on disk:"
+            #   stat -c%s "tests/test_data/large_file.dat" # For Linux
+            #   # For Windows: powershell -Command "(Get-Item 'tests/test_data/large_file.dat').Length"
+            #   echo "First 150 bytes (to check if it's a pointer or binary):"
+            #   head -c 150 "tests/test_data/large_file.dat"
+            #   echo
+            # fi
+          else
+            echo "tests/test_data directory not found or is empty"
+          fi
         shell: bash
 
       - name: Set up Python ${{ matrix.python-version }}
