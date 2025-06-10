@@ -37,14 +37,13 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
+          lfs: true
       
-      # Add Git LFS support
-      - name: Setup Git LFS
+      - name: Verify Git LFS files
         run: |
-          git lfs install
-          git lfs pull
+          git lfs ls-files
+          ls -la tests/test_data/ || echo "test_data directory not found"
 
-      # Replace conda setup with Python setup
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -61,26 +60,22 @@ jobs:
           pip install -e .[testing]
           pytest    
           
-      - name: Export Environment
-        shell: bash -l {0}
-        run: |
-          mkdir -p artifacts
-          filename=env_py${{ matrix.python-version }}_${{ matrix.os }}.yml
-          conda env export --no-builds | grep -v "prefix" > artifacts/$filename
+      
+      - name: Create artifacts directory
+        run: mkdir -p artifacts
+        
       - name: Upload Coverage
-        shell: bash -l {0}
         run: |
           pip install coveralls && coveralls --service=github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COVERALLS_FLAG_NAME: ${{ matrix.python-version }}
           COVERALLS_PARALLEL: true
+          
       - name: Create wheel and dist package
-        shell: bash -l {0}
         run: |
           pip install setuptools_scm twine
-          if [ ${{ matrix.os }} == "windows-latest" ]
-          then
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
             # build whls on windows
             pip install wheel
             python setup.py bdist_wheel --dist-dir artifacts/dist
@@ -90,6 +85,7 @@ jobs:
           fi
           ls artifacts/dist
           twine check artifacts/dist/*
+        shell: bash
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
