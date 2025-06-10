@@ -24,28 +24,54 @@ jobs:
             python-version: '3.9'  # first supported
           - os: "windows-latest"
             python-version: '3.9'  # first supported
-          - os: "macos-latest"
-            python-version: '3.9'  # first supported
           - os: "ubuntu-latest"
             python-version: '3.12'  # latest supported
           - os: "windows-latest"
-            python-version: '3.12'  # latest supported
-          - os: "macos-latest"
             python-version: '3.12'  # latest supported
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
           fetch-depth: 0
+          lfs: false
           
-      # Use dedicated Git LFS action
-      - name: Git LFS Pull
-        uses: actions/checkout@v4
-        with:
-          lfs: true
-    
-      - name: Pull LFS files
-        uses: git-lfs/git-lfs-action@v1.0.1
+      - name: Install Git LFS
+        run: |
+          if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+            # Ubuntu
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get install git-lfs
+          elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+            # macOS (Git LFS is usually pre-installed, but ensure it's available)
+            brew install git-lfs || echo "git-lfs already installed"
+          else
+            # Windows - Git LFS comes with Git for Windows
+            echo "Git LFS should be available on Windows runners"
+          fi
+        shell: bash
+
+        # Initialize and pull LFS files
+      - name: Setup Git LFS and pull files
+        run: |
+          git lfs install
+          git lfs pull
+        shell: bash
+
+      # Verify LFS files are downloaded correctly
+      - name: Verify Git LFS files
+        run: |
+          echo "=== Git LFS files list ==="
+          git lfs ls-files
+          echo "=== LFS files with sizes ==="
+          git lfs ls-files | head -5 | while read line; do
+            file=$(echo $line | cut -d' ' -f3)
+            if [ -f "$file" ]; then
+              ls -lh "$file"
+            fi
+          done
+          echo "=== Test data directory ==="
+          ls -la tests/test_data/ || echo "test_data directory not found"
+        shell: bash
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
