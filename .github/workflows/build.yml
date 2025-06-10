@@ -34,48 +34,41 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
-          lfs: false  # Disable automatic LFS, we'll handle it manually
+          lfs: false  # Disable auto-LFS, we'll handle manually
       
-      - name: Install Git LFS and force pull files
+      - name: Setup Git LFS and force download
+        timeout-minutes: 1  # Add timeout for the slow download
         run: |
           if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
             sudo apt-get update
             sudo apt-get install git-lfs
           fi
+      
+          # Configure Git LFS
           git lfs install
+      
+          # Show what LFS files should be downloaded
+          echo "LFS files to download:"
+          git lfs ls-files
+      
+          # Force download all LFS files
+          echo "Starting LFS download..."
           git lfs fetch --all
-          git lfs checkout
+          git lfs checkout --force
+      
+          # Verify download worked (check file sizes)
+          echo "Verifying LFS files are downloaded:"
+          git lfs ls-files | while read file; do
+            if [ -f "$file" ]; then
+              size=$(stat -c%s "$file" 2>/dev/null || stat -f%z "$file" 2>/dev/null || echo "0")
+              echo "$file: $size bytes"
+              if [ "$size" -lt 200 ]; then
+                echo "WARNING: $file might still be a pointer file (too small)"
+              fi
+            fi
+          done
         shell: bash
 
-      - name: Verify Git LFS files
-        run: |
-          echo "--- Git LFS env (shows LFS configuration) ---"
-          git lfs env
-          echo "--- Git LFS ls-files (shows tracked files, '*' means pointer, '-' means downloaded file) ---"
-          git lfs ls-files
-          echo "--- Git LFS ls-files -l (shows size of checked-out files) ---"
-          git lfs ls-files -l
-          echo "--- Listing contents of tests/test_data/ (if it exists) ---"
-          if [ -d "tests/test_data/" ]; then
-            ls -laR tests/test_data/
-            # If you have a specific LFS file, check its size and content directly:
-            # For example, if 'tests/test_data/large_file.dat' is an LFS file:
-            # if [ -f "tests/test_data/large_file.dat" ]; then
-            #   echo "--- Verifying specific LFS file: tests/test_data/large_file.dat ---"
-            #   echo "Actual size on disk:"
-            #   if [ "${{ runner.os }}" == "Windows" ]; then
-            #     powershell -Command "(Get-Item 'tests/test_data/large_file.dat').Length"
-            #   else
-            #     stat -c%s "tests/test_data/large_file.dat" # For Linux
-            #   fi
-            #   echo "First 150 bytes (to check if it's a pointer or binary):"
-            #   head -c 150 "tests/test_data/large_file.dat"
-            #   echo
-            # fi
-          else
-            echo "tests/test_data directory not found or is empty"
-          fi
-        shell: bash
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
