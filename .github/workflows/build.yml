@@ -37,25 +37,29 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
-      - uses: conda-incubator/setup-miniconda@v3
-        with:
-          auto-update-conda: true
-          python-version: ${{ matrix.python-version }}
-          channel-priority: flexible
-          activate-environment: ease_grid
-          auto-activate-base: false
-          environment-file: 'environment.yml'
-      - name: Print environment infos
-        shell: bash -l {0}
+      
+      # Add Git LFS support
+      - name: Setup Git LFS
         run: |
-          conda info -a
-          which pip
-          which python
+          git lfs install
+          git lfs pull
+
+      # Replace conda setup with Python setup
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Print environment infos
+        run: |
+          python --version
+          pip --version
+
       - name: Install base package and run tests
-        shell: bash -l {0}
         run: |
           pip install -e .[testing]
-          pytest
+          pytest    
+          
       - name: Export Environment
         shell: bash -l {0}
         run: |
