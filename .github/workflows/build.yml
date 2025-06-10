@@ -35,25 +35,13 @@ jobs:
           fetch-depth: 0
           lfs: true
           
-      # Install Git LFS on Ubuntu
-      - name: Install Git LFS on Ubuntu
-        if: matrix.os == 'ubuntu-latest'
+      - name: Initialize Git LFS and Pull files
         run: |
-          sudo apt-get update
-          sudo apt-get install -y curl gcc
-          curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-          sudo apt-get install -y git-lfs
-          git lfs install
+          git lfs install --local
           git lfs pull
-
-      # Install Git LFS on Windows
-      - name: Install Git LFS on Windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          choco install git-lfs
-          git lfs install
-          git lfs pull
-        shell: powershell
+          echo "Git LFS version:"
+          git lfs version
+        shell: bash
 
       # Verify LFS files are downloaded correctly
       - name: Verify Git LFS files
