@@ -34,8 +34,12 @@ jobs:
       
       - name: Download test data
         run: |
-          wget https://github.com/daberer/ease_grid/releases/download/test-data-v1.0/test_data.zip
-          unzip test_data.zip
+          mkdir -p tests/test_data
+          cd tests/test_data
+          wget https://github.com/daberer/ease_grid/releases/download/test-data-v1.0/EASE2_M25km.lats.1388x584x1.double
+          wget https://github.com/daberer/ease_grid/releases/download/test-data-v1.0/EASE2_M25km.lons.1388x584x1.double
+          wget https://github.com/daberer/ease_grid/releases/download/test-data-v1.0/EASE2_M36km.lats.964x406x1.double
+          wget https://github.com/daberer/ease_grid/releases/download/test-data-v1.0/EASE2_M36km.lons.964x406x1.double
 
 
       - name: Set up Python ${{ matrix.python-version }}
