@@ -29,45 +29,11 @@ jobs:
           - os: "windows-latest"
             python-version: '3.12'  # latest supported
     steps:
-      
-      - uses: actions/checkout@v4
+      - name: Checkout with LFS
+        uses: actions/checkout@v4
         with:
-          submodules: true
-          fetch-depth: 0
-          lfs: false  # Disable auto-LFS, we'll handle manually
-      
-      - name: Setup Git LFS and force download
-        timeout-minutes: 1  # Add timeout for the slow download
-        run: |
-          if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-            sudo apt-get update
-            sudo apt-get install git-lfs
-          fi
-      
-          # Configure Git LFS
-          git lfs install
-      
-          # Show what LFS files should be downloaded
-          echo "LFS files to download:"
-          git lfs ls-files
-      
-          # Force download all LFS files
-          echo "Starting LFS download..."
-          git lfs fetch --all
-          git lfs checkout
-      
-          # Verify download worked (check file sizes)
-          echo "Verifying LFS files are downloaded:"
-          git lfs ls-files | while read file; do
-            if [ -f "$file" ]; then
-              size=$(stat -c%s "$file" 2>/dev/null || stat -f%z "$file" 2>/dev/null || echo "0")
-              echo "$file: $size bytes"
-              if [ "$size" -lt 200 ]; then
-                echo "WARNING: $file might still be a pointer file (too small)"
-              fi
-            fi
-          done
-        shell: bash
+          lfs: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
 
       - name: Set up Python ${{ matrix.python-version }}
