@@ -4,8 +4,13 @@ Changelog
 
 Unreleased
 ==========
-
 -
+
+Version 0.3
+===========
+- Add pyproject.toml
+- Add GitHub CI
+- Use LFS testdata from public gitlab repo
 
 Version 0.2
 ===========
