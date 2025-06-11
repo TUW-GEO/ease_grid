@@ -32,12 +32,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-      - name: Setup Git LFS
+      - name: Download test data
         run: |
-          git lfs install
-          git lfs pull
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          wget https://github.com/daberer/ease_grid/releases/download/test-data-v1.0/test_data.zip
+          unzip test_data.zip
 
 
       - name: Set up Python ${{ matrix.python-version }}
