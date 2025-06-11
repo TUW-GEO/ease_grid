@@ -29,11 +29,15 @@ jobs:
           - os: "windows-latest"
             python-version: '3.12'  # latest supported
     steps:
-      - name: Checkout with LFS
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          lfs: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Git LFS
+        run: |
+          git lfs install
+          git lfs pull
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
       - name: Set up Python ${{ matrix.python-version }}
