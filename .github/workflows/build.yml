@@ -32,12 +32,13 @@ jobs:
             python-version: '3.12'  # latest supported
 
     steps:
-      - name: Checkout
       - uses: actions/checkout@v4
         with:
           submodules: true
           fetch-depth: 0
           lfs: true
+      - name: Checkout LFS objects
+        run: git lfs checkout
           
 
       - name: Set up Python ${{ matrix.python-version }}
