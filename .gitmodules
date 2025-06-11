@@ -1,0 +1,3 @@
+[submodule "tests/ease_grid-test-data"]
+	path = tests/ease_grid-test-data
+	url = https://git.geo.tuwien.ac.at/public_projects/rs/rs_testdata/ease_grid-test-data.git
