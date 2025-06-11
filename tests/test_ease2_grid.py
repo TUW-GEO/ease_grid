@@ -34,7 +34,7 @@ def test_EASE2_global_36km():
 
     test_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
-        'test_data')
+        'ease_grid-test-data', 'EASE2')
     test_lat = os.path.join(test_path, 'EASE2_M36km.lats.964x406x1.double')
     test_lon = os.path.join(test_path, 'EASE2_M36km.lons.964x406x1.double')
     egrid = EASE2_grid(36000)
@@ -54,7 +54,7 @@ def test_EASE2_global_25km():
 
     test_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
-        'test_data')
+        'ease_grid-test-data', 'EASE2')
     test_lat = os.path.join(test_path, 'EASE2_M25km.lats.1388x584x1.double')
     test_lon = os.path.join(test_path, 'EASE2_M25km.lons.1388x584x1.double')
     egrid = EASE2_grid(25000, map_scale=25025.2600081)
